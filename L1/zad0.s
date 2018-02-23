@@ -30,14 +30,17 @@ movq $0, %rdi
 
 zamien_wielkosc_liter:
 movb buf_read(, %rdi, 1), %bh
-#cmp $'A', %bh
-#jl nie_litera
-#cmp $'z', %bh
-#jg nie_litera
-#cmp $'Z', %bh
-#jg nie_litera
-#cmp $'a', %bh
-#jl nie_litera
+
+cmp $'A', %bh
+jl nie_litera
+
+cmp $'z', %bh
+jg nie_litera
+
+cmp $'a', %bh
+jl nie_litera_duza
+
+zamien:
 movb $0x20, %bl
 xor %bh, %bl
 movb %bl, buf_write(,%rdi,1)
@@ -45,13 +48,8 @@ inc %rdi
 cmp %rax, %rdi
 jl zamien_wielkosc_liter
 
+koniec:
 movb $'\n', buf_write(,%rdi,1)
-
-nie_litera:
-movb %bh, buf_write(,%rdi,1)
-inc %rdi
-cmp %rax, %rdi
-jl zamien_wielkosc_liter
 
 movq $SYSWRITE, %rax
 movq $STDOUT, %rdi
@@ -62,3 +60,19 @@ syscall
 movq $SYS_EXIT, %rax
 movq $SYS_SUCCESS, %rdi
 syscall
+
+nie_litera:
+movb %bh, buf_write(,%rdi,1)
+inc %rdi
+cmp %rax, %rdi
+jl zamien_wielkosc_liter
+jmp koniec
+
+nie_litera_duza:
+cmp $'Z', %bh
+jl zamien
+movb %bh, buf_write(,%rdi,1)
+inc %rdi
+cmp %rax, %rdi
+jl zamien_wielkosc_liter
+jmp koniec

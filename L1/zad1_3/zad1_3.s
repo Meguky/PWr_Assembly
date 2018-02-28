@@ -7,6 +7,9 @@ SYSEXIT = 60
 EXIT_SUCCESS = 0
 BUF_LEN = 512
 
+error: .ascii "Podany ciąg ma nie zawiera tylko cyfr\n"
+error_len = .-error
+
 .bss
 .comm buf_read, 512
 .comm buf_write, 512
@@ -21,8 +24,19 @@ movq $buf_read, %rsi
 movq $BUF_LEN, %rdx
 syscall
 
-#ZAMIANA ASCII NA LICZBY
 dec %rax
+#SPRAWDZENIE POPRAWNOSCI CIAGU
+movq $0, %rdi
+petla_popraw:
+movb buf_read(,%rdi,1), %bh
+cmp $'0', %bh
+jl input_error
+cmp $'9', %bh
+jg input_error
+inc %rdi
+cmp %rax, %rdi
+jl petla_popraw
+#ZAMIANA ASCII NA LICZBY
 dec %rax
 movq %rax, %rdi
 movq $1, %rsi
@@ -83,7 +97,16 @@ movq $STDOUT, %rdi
 movq $buf_write, %rsi
 movq %r8, %rdx
 syscall
+jmp program_exit
 
+input_error:
+movq $SYSWRITE, %rax
+movq $STDOUT, %rdi
+movq $error, %rsi
+movq $error_len, %rdx
+syscall
+
+program_exit:
 movq $SYSEXIT, %rax
 movq $EXIT_SUCCESS, %rdi
 syscall

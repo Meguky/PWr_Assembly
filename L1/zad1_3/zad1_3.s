@@ -67,7 +67,7 @@ movq $0, %rdi
 movq %r10, %rax
 movq $10, %r8
 petla_zamiana_ascii:
-mov $0, %rdx
+movq $0, %rdx
 div %r8
 add $'0', %rdx
 movb %dl, buf_read(,%rdi,1)

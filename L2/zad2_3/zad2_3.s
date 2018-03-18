@@ -168,21 +168,19 @@ jg petla_zamiana_hex_2
 clc
 pushf
 movq $0, %r8
-movq %r8, %r9
 petla_dodawanie:
-inc %r9
-movb buf_hex_1(,%r9,1), %al
-movb buf_hex_2(,%r9,1), %bl
+movb buf_hex_1(,%r8,1), %al
+movb buf_hex_2(,%r8,1), %bl
 popf
 adc %bl, %al
 pushf
 movb %al, buf_wynik_hex(,%r8,1)
 inc %r8
-cmp $511, %r8
+cmp $512, %r8
 jl petla_dodawanie
 
-movq $0, %r8
-movq $511, %r9
+movq $1, %r8
+movq $0, %r9
 zamiana_ascii:
 movq $0, %rax
 inc %r8
@@ -201,14 +199,14 @@ add $'0', %bl
 movb %bl, buf_wynik_ascii(,%r9,1)
 shr $2, %rax
 
-dec %r9
+inc %r9
 inc %r10
 
 cmp $4, %r10
 jl zamiana_ascii_2
 
 cmp $511, %r8
-jg zamiana_ascii
+jl zamiana_ascii
 
 movq $SYSOPEN, %rax
 movq $plik_odp, %rdi

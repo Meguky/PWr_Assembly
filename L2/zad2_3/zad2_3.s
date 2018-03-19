@@ -19,7 +19,7 @@ plik_odp: .ascii "odp.txt\0"
 .comm buf_hex_2, 512
 .comm buf_wynik_hex, 512
 .comm buf_wynik_ascii, 512
-
+.comm buf_wynik_ascii_odwrot, 512
 .text
 .globl _start
 _start:
@@ -169,23 +169,23 @@ clc
 pushf
 movq $0, %r8
 petla_dodawanie:
-movb buf_hex_1(,%r8,1), %al
-movb buf_hex_2(,%r8,1), %bl
+movq buf_hex_1(,%r8,1), %rax
+movq buf_hex_2(,%r8,1), %rbx
 popf
-adc %bl, %al
+adc %rbx, %rax
 pushf
-movb %al, buf_wynik_hex(,%r8,1)
-inc %r8
+movq %rax, buf_wynik_hex(,%r8,1)
+add $8, %r8
 cmp $512, %r8
 jl petla_dodawanie
 
-movq $1, %r8
+movq $0, %r8
 movq $0, %r9
 zamiana_ascii:
 movq $0, %rax
 inc %r8
 movb buf_wynik_hex(,%r8,1), %al
-shr $8, %rax
+shl $8, %rax
 dec %r8
 movb buf_wynik_hex(,%r8,1), %al
 add $2, %r8
@@ -196,7 +196,7 @@ zamiana_ascii_2:
 movb %al, %bl
 and $3, %bl
 add $'0', %bl
-movb %bl, buf_wynik_ascii(,%r9,1)
+movb %bl, buf_wynik_ascii_odwrot(,%r9,1)
 shr $2, %rax
 
 inc %r9
@@ -205,8 +205,18 @@ inc %r10
 cmp $4, %r10
 jl zamiana_ascii_2
 
-cmp $511, %r8
+cmp $512, %r8
 jl zamiana_ascii
+
+movq $0, %r8
+movq $511, %r9
+petla_odwrot:
+movb buf_wynik_ascii_odwrot(,%r8,1), %al
+movb %al, buf_wynik_ascii(,%r9,1)
+dec %r9
+inc %r8
+cmp $512, %r8
+jl petla_odwrot
 
 movq $SYSOPEN, %rax
 movq $plik_odp, %rdi

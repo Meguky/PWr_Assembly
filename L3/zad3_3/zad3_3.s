@@ -17,9 +17,9 @@ _start:
 nop
 
 #Parametr do funkcji
-movq $3, %rax
+movq $6, %rax
 
-call rekurencja_stos
+call rekurencja_rejestr
 
 movq $0, %r10
 cmp $0, %rbx
@@ -86,7 +86,7 @@ movq $SYSEXIT, %rax
 movq $EXIT_SUCCESS, %rdi
 syscall
 
-rekurencja_stos:
+rekurencja_rejestr:
 
 push %rbp
 movq %rsp, %rbp
@@ -103,7 +103,7 @@ dec %rax
 
 push %rcx
 push %rax
-call rekurencja_stos
+call rekurencja_rejestr
 movq %rbx, %rax
 mul %r9
 movq %rax, %rbx
@@ -115,7 +115,7 @@ dec %rax
 
 push %rcx
 push %rax
-call rekurencja_stos
+call rekurencja_rejestr
 pop %rax
 pop %rcx
 add %rbx, %rcx

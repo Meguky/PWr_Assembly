@@ -31,7 +31,7 @@ cmp $-1, %r9
 je wyswietl_brak
 
 movq %r9, %rax
-movq $10, %rdx
+movq $10, %rbx
 movq $0, %rcx
 
 zamiana:

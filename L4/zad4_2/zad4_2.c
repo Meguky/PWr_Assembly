@@ -1,6 +1,6 @@
 #include<stdio.h>
 
-char liczba[] = "122";
+char liczba[] = "123";
 long wynik = 0;
 
 int main(void){

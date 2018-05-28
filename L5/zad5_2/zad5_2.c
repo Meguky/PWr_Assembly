@@ -1,14 +1,14 @@
 #include<stdio.h>
 
-extern double log(int x, int kroki);
+extern double logarytm(double liczba, int kroki);
 
 int main(void){
-	int i;
+	float i;
 	int kroki;
-	print("Liczba: ");
-	scanf("%d",&i);
-	print("Kroki: ");
-	scanf("%d",&i);
-	print("Ln: ");
-	printf("%lf",log(i));
+	printf("Liczba: ");
+	scanf("%f",&i);
+	printf("Kroki: ");
+	scanf("%d",&kroki);
+	printf("Ln: ");
+	printf("%lf",logarytm(i,kroki));
 }
